@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Zgłoszenie {{ ticket.case_number }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="top-bar-left">
+        <strong>Szczegóły zgłoszenia: {{ ticket.case_number }}</strong>
+    </div>
+    <div class="top-bar-right">
+        <a href="{{ url_for('dashboard') }}">← Powrót do listy</a>
+    </div>
+</div>
+
+<div class="container-full">
+    <div class="ticket-grid">
+        
+        <div class="ticket-left-col">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h1 style="margin: 0; font-size: 1.5rem;">{{ ticket.title }}</h1>
+                    <span class="status-badge status-{{ ticket.status|replace(' ', '_') }}">
+                        {{ ticket.status }}
+                    </span>
+                </div>
+
+                <div class="details-grid">
+                    <h3 style="color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 5px;">Informacje techniczne</h3>
+                    <p><strong>Opis problemu:</strong> {{ ticket.description }}</p>
+                    <p><strong>Serwis:</strong> {{ ticket.service }}</p>
+                    <p><strong>Status konta:</strong> {{ ticket.account_status }} | <strong>Cache:</strong> {{ ticket.cache_status }}</p>
+                    <p><strong>Data utworzenia:</strong> {{ ticket.created_at_dt.strftime('%Y-%m-%d %H:%M') }}</p>
+                    
+                    <h3 style="color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 5px; margin-top: 20px;">Dane identyfikacyjne</h3>
+                    <p><strong>Klient:</strong> {{ ticket.client_name }} (Nr: {{ ticket.client_number }})</p>
+                    <p><strong>E-mail:</strong> {{ ticket.email }}</p>
+                    <p><strong>PESEL/NIP:</strong> {{ ticket.pesel_nip }}</p>
+                    {% if ticket.invoice_number %}
+                        <p><strong>Nr faktury:</strong> {{ ticket.invoice_number }}</p>
+                    {% endif %}
+
+                    {% if ticket.service == "Aplikacja mobilna" %}
+                    <h3 style="color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 5px; margin-top: 20px;">Środowisko błędu</h3>
+                    <p><strong>Urządzenie:</strong> {{ ticket.model }}</p>
+                    <p><strong>System:</strong> {{ ticket.os_info }} | <strong>Wersja app:</strong> {{ ticket.version }}</p>
+                    {% endif %}
+                </div>
+
+                {% if ticket.attachments_list %}
+                <div style="margin-top: 25px;">
+                    <h3 style="font-size: 1rem;">📁 Załączone pliki:</h3>
+                    <ul class="ticket-list" style="margin-top: 10px;">
+                        {% for file in ticket.attachments_list %}
+                        <li style="display: flex; justify-content: space-between; align-items: center; padding: 8px 15px;">
+                            <span style="font-size: 0.9rem;">{{ file }}</span>
+                            <a href="{{ url_for('static', filename='uploads/' + file) }}" download style="font-size: 0.8rem; color: var(--primary);">Pobierz</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if ticket.solution and role == "consultant" %}
+            <div class="card" style="border-left: 5px solid #059669; background: #ecfdf5;">
+                <h3 style="color: #065f46; margin-top: 0;">Rozwiązanie od działu IT:</h3>
+                <p style="white-space: pre-wrap;">{{ ticket.solution }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="ticket-right-col">
+            
+            <div class="card">
+                <h3>Komentarze</h3>
+                <form method="POST">
+                    <label style="font-size: 0.85rem;">Dodaj nowy komentarz:</label>
+                    <textarea name="note" placeholder="Wpisz treść komentarza..." style="margin-bottom: 15px;"></textarea>
+
+                    {% if role == 'it' and ticket.status != 'Zamknięte' %}
+                        <label style="font-size: 0.85rem; color: #b45309;"><strong>Rozwiązanie zgłoszenia:</strong></label>
+                        <textarea name="solution" placeholder="Wpisz rozwiązanie, aby zamknąć sprawę..." style="border-color: #f59e0b;"></textarea>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 15px;">Wpisanie rozwiązania automatycznie zamknie zgłoszenie.</p>
+                    {% endif %}
+
+                    <button type="submit" style="width: 100%;">Wyślij odpowiedź</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Historia konwersacji</h3>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    {% if ticket.notes_list %}
+                        {% for note in ticket.notes_list %}
+                        <div style="padding: 10px; border-bottom: 1px solid #eee; font-size: 0.9rem;">
+                            {{ note }}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="color: var(--text-muted); font-style: italic; text-align: center;">Brak komentarzy w tej sprawie.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card" style="background: #f8fafc;">
+                <h3 style="font-size: 0.9rem; color: var(--text-muted);">Logi systemowe</h3>
+                <ul style="font-size: 0.75rem; color: #64748b; padding-left: 20px;">
+                    {% for log in ticket.logs_list %}
+                        <li style="margin-bottom: 5px;">{{ log }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div> </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,306 @@
+:root {
+    --primary: #3b82f6;      
+    --primary-hover: #2563eb;
+    --dark: #1e293b;         
+    --bg-body: #f3f4f6;       
+    --card-bg: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --radius: 10px;
+    --danger: #ef4444;        
+    --success: #10b981;      
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    margin: 0;
+    line-height: 1.5;
+}
+
+
+/* Układ strony */
+
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.container-full {
+    max-width: 96vw;
+    margin: 15px auto;
+}
+
+/* Podstawowy element interfejsu - karta */
+
+.card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+}
+
+/* Pasek nawigacyjny */
+
+.top-bar {
+    background-color: var(--dark);
+    color: white;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-bar a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-left: 20px;
+    transition: color 0.2s;
+}
+
+.top-bar a:hover {
+    color: white;
+}
+
+
+/* Formularz i przyciski */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    font-size: 14px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background-color: var(--primary-hover);
+}
+
+/* --- WALIDACJA PÓL --- */
+
+/* Zbiorczy komunikat na górze strony */
+#form-error-summary {
+    background-color: #fef2f2;
+    color: var(--danger);
+    padding: 15px;
+    border-radius: var(--radius);
+    border: 1px solid #fee2e2;
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 700;
+    display: none; /* Sterowane przez JS */
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stan błędny pola */
+input.invalid, textarea.invalid, select.invalid {
+    border: 2px solid var(--danger) !important;
+    background-color: #fffafb !important; /* Bardzo jasny czerwony */
+}
+
+/* Stan poprawny pola */
+input.valid, textarea.valid, select.valid {
+    border: 2px solid var(--success) !important;
+    background-color: #fafffb !important; /* Bardzo jasny zielony */
+}
+
+/* Kontener na tekst błędu pod polem */
+.error-message {
+    color: var(--danger);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    display: block;      
+    min-height: 1.2em;   
+    transition: opacity 0.2s ease;
+}
+
+.error-message:empty {
+    margin-bottom: 0;
+}
+
+
+/* Dashboard i lista zgłoszeń  */
+
+.ticket-list {
+    list-style: none;
+    padding: 0;
+}
+
+.ticket-list li {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: transform 0.1s;
+}
+
+.ticket-list li:hover {
+    transform: translateX(5px);
+    border-left: 4px solid var(--primary);
+}
+
+.ticket-list a {
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+
+/* 6. Statusy  */
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.status-Nowe { background: #dbeafe; color: #1e40af; }
+.status-W_trakcie_realizacji { background: #fef3c7; color: #92400e; }
+.status-Zamknięte { background: #d1fae5; color: #065f46; }
+
+/* 7. Widok szczegółow zgłoszenia  */
+
+.ticket-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 25px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .ticket-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.details-grid p {
+    margin: 10px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed #eee;
+}
+
+
+/* 8. System powiadomień  */
+
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.notification-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--danger);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 50%;
+    border: 2px solid var(--dark);
+}
+
+.notification-panel {
+    display: none;
+    position: absolute;
+    top: 55px;
+    left: 20px;
+    width: 300px;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    z-index: 1000;
+    border: 1px solid var(--border);
+}
+
+.notification-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notification-panel li a {
+    display: block;
+    padding: 12px 15px;
+    color: var(--text-main);
+    border-bottom: 1px solid #eee;
+    margin: 0;
+}
+
+.notification-panel li a:hover {
+    background-color: #f8fafc;
+}
+
+#form-error-summary {
+    background-color: #fef2f2;
+    color: #ef4444;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #fee2e2;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 700;
+    display: none;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+}

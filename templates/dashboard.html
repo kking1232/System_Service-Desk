@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Główny - Service Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="top-bar-left">
+        {% if role == "consultant" %}
+        <div class="notification-wrapper" style="position: relative;">
+            <span class="notification-bell" onclick="toggleNotifications(event)">
+                🔔
+                {% if notifications and notifications|length > 0 %}
+                    <span class="notification-count">{{ notifications|length }}</span>
+                {% endif %}
+            </span>
+
+            <div id="notification-panel" class="notification-panel">
+                <ul>
+                    {% if notifications and notifications|length > 0 %}
+                        {% for n in notifications %}
+                            <li>
+                                <a href="{{ url_for('view_ticket', ticket_id=n.ticket_id) }}">{{ n.message }}</a>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li style="padding: 15px; color: var(--text-muted); text-align: center;">Brak nowych powiadomień</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="top-bar-right">
+        <span>Zalogowany jako: <strong>{{ session.username }}</strong></span>
+        <a href="{{ url_for('logout') }}">Wyloguj się</a>
+    </div>
+</div>
+
+<div class="container">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Dashboard Systemu</h1>
+        
+        {% if role == "consultant" %}
+            <a href="{{ url_for('create_ticket') }}">
+                <button>➕ Nowe zgłoszenie</button>
+            </a>
+        {% endif %}
+    </div>
+
+    {% if role == "it" %}
+        <div class="card">
+            <h3>Raportowanie i statystyki IT</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Pobierz zestawienie zgłoszeń wraz z czasem realizacji (SLA).</p>
+            <form action="{{ url_for('download_report') }}" method="POST" style="display: flex; gap: 10px;">
+                <select name="type" style="flex: 2;">
+                    <option value="monthly">Raport miesięczny</option>
+                    <option value="quarterly">Raport zbiorczy</option>
+                </select>
+                <button type="submit" style="flex: 1;">Pobierz .xlsx</button>
+            </form>
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <form method="GET" action="{{ url_for('dashboard') }}" style="display: flex; gap: 10px;">
+            <input type="text" name="q" placeholder="Szukaj po numerze IT- lub tytule..." value="{{ query or '' }}">
+            <button type="submit">Szukaj</button>
+        </form>
+    </div>
+
+    <h3>Twoje aktualne zgłoszenia</h3>
+    <ul class="ticket-list">
+        {% if tickets %}
+            {% for t in tickets %}
+                <li style="padding: 0; overflow: hidden;">
+                    <a href="{{ url_for('view_ticket', ticket_id=t.id) }}" style="display: block; padding: 20px; text-decoration: none; color: inherit;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="font-size: 1.1rem; font-weight: bold; color: var(--primary);">{{ t.title }}</span>
+                                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">
+                                    Numer sprawy: <strong>{{ t.case_number }}</strong> | Data: {{ t.created_at }}
+                                </div>
+                            </div>
+                            <span class="status-badge status-{{ t.status|replace(' ', '_') }}">
+                                {{ t.status }}
+                            </span>
+                        </div>
+                    </a>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li style="text-align: center; padding: 30px; color: var(--text-muted);">
+                Brak zgłoszeń pasujących do zapytania.
+            </li>
+        {% endif %}
+    </ul>
+</div>
+
+<script src="{{ url_for('static', filename='js/notifications.js')}}"></script>
+</body>
+</html>

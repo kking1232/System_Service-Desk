@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Logowanie - Service Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="top-bar-left">
+        <strong>Service Desk IT</strong>
+    </div>
+    <div class="top-bar-right">
+        <span>System automatyzacji procesów</span>
+    </div>
+</div>
+
+<div class="container login-wrapper">
+    <div class="card login-card">
+        <h2 style="text-align: center; margin-bottom: 20px;">Panel Logowania</h2>
+
+        {% if error %}
+            <div style="background: #fee2e2; color: #b91c1c; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 20px; font-size: 0.9rem;">
+                ⚠️ {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 0.85rem; color: var(--text-muted);">Nazwa użytkownika</label>
+                <input type="text" name="username" placeholder="Wpisz login..." required autofocus>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="font-size: 0.85rem; color: var(--text-muted);">Hasło</label>
+                <input type="password" name="password" placeholder="Wpisz hasło..." required>
+            </div>
+
+            <button type="submit" style="width: 100%; padding: 14px;">Zaloguj do systemu</button>
+        </form>
+
+        <div style="margin-top: 20px; text-align: center; font-size: 0.8rem; color: var(--text-muted);">
+            Projekt inżynierski &copy; 2025
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

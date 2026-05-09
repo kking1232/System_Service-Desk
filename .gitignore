@@ -1,0 +1,11 @@
+# Pliki tymczasowe Pythona
+__pycache__/
+*.pyc
+
+# Dane wrażliwe i lokalne bazy
+instance/
+.env
+
+# Załączniki użytkowników
+static/uploads/*
+!static/uploads/.gitkeep

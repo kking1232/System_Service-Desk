@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Nowe zgłoszenie - Service Desk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="top-bar">
+    <span>Nowe zgłoszenie systemowe</span>
+    <a href="{{ url_for('dashboard') }}">Powrót do panelu</a>
+</div>
+
+<div class="container">
+
+    <h1 class="section-title" style="text-align: center;">Formularz zgłoszenia błędu</h1>
+
+    <div id="form-error-summary">Formularz zawiera błędy. Popraw pola zaznaczone na czerwono.</div>
+
+    <form id="ticketForm" method="POST" enctype="multipart/form-data" novalidate>
+
+        <div class="card">
+            <h2>1. Szczegóły problemu</h2>
+            
+            <div class="input-group">
+                <label>Tytuł zgłoszenia (krótki opis)</label>
+                <input type="text" name="title" placeholder="Np. Brak możliwości zalogowania" required>
+                <span class="error-message"></span>
+            </div>
+
+            <div class="input-group" style="margin-top: 15px;">
+                <label style="display: block;">Opis błędu / Treść komunikatu</label>
+                <textarea name="description" id="description" placeholder="Opisz dokładnie co się stało (min. 20 znaków)..." required minlength="20" style="min-height: 100px;"></textarea>
+                <span class="error-message"></span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                <div class="input-group">
+                    <label>Wybierz serwis</label>
+                    <select name="service" id="service" required>
+                        <option value="" disabled selected>Wybierz...</option>
+                        <option value="Aplikacja mobilna">Aplikacja mobilna</option>
+                        <option value="Serwis WWW">Serwis WWW</option>
+                    </select>
+                    <span class="error-message"></span>
+                </div>
+                <div class="input-group">
+                    <label>Status konta klienta</label>
+                    <select name="account_status" required>
+                        <option value="" disabled selected>Wybierz...</option>
+                        <option value="aktywny">Aktywny</option>
+                        <option value="nieaktywny">Nieaktywny</option>
+                        <option value="zablokowany">Zablokowany</option>
+                    </select>
+                    <span class="error-message"></span>
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top: 15px;">
+                <label style="display: block;">Czy pamięć podręczna (cache) była czyszczona?</label>
+                <select name="cache_status" required>
+                    <option value="" disabled selected>Wybierz...</option>
+                    <option value="wyczyszczona">Tak, wyczyszczona</option>
+                    <option value="niewyczyszczona">Nie</option>
+                </select>
+                <span class="error-message"></span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>2. Identyfikacja klienta</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-group">
+                    <label>Imię i nazwisko / Firma</label>
+                    <input type="text" name="client_name" placeholder="Jan Kowalski" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="input-group">
+                    <label>Adres e-mail</label>
+                    <input type="email" name="email" placeholder="email@test.pl" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="input-group">
+                    <label>Numer klienta (8 cyfr)</label>
+                    <input type="text" name="client_number" placeholder="12345678" required pattern="\d{8}" title="Numer klienta musi mieć dokładnie 8 cyfr">
+                    <span class="error-message"></span>
+                </div>
+                <div class="input-group">
+                    <label>PESEL / NIP</label>
+                    <input type="text" name="pesel_nip" placeholder="11 cyfr (PESEL) lub 10 cyfr (NIP)" required>
+                    <span class="error-message"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>3. Informacje dodatkowe</h2>
+            
+           <div class="input-group">
+                <label>Czy problem dotyczy faktury?</label>
+                <select id="invoice_option" required>
+                    <option value="" disabled selected>Wybierz...</option>
+                    <option value="nie">Nie</option>
+                    <option value="tak">Tak, zgłaszam błąd w fakturze</option>
+                </select>
+                <span class="error-message"></span>
+            </div>
+
+            <div id="invoice_field" class="input-group" style="display:none; margin-top:15px;">
+                <label>Numer faktury</label>
+                <input type="text" name="invoice_number" placeholder="Np. FV/2025/12/01">
+                <span class="error-message"></span>
+            </div>
+
+            <div id="mobile_fields" style="display:none; margin-top:20px; border-top: 1px solid #eee; padding-top: 15px;">
+                <h3 style="color: var(--primary);">Dane urządzenia mobilnego</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                    <div class="input-group">
+                        <input type="text" name="version" id="version" placeholder="Wersja aplikacji">
+                        <span class="error-message"></span>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="model" id="model" placeholder="Model (np. iPhone 15)">
+                        <span class="error-message"></span>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="os" id="os" placeholder="System (np. Android 14)">
+                        <span class="error-message"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>4. Załączniki</h2>
+         
+            <div id="drop-zone">
+                <p>📁 Kliknij tutaj lub przeciągnij pliki, aby dodać załączniki</p>
+                <input type="file" id="file-input" name="attachments" multiple style="display: none;">
+            </div>
+
+            <div id="attachment-list"></div>
+        </div>
+
+        <button type="submit" style="width: 100%; font-size: 1.1rem; padding: 15px;">Utwórz zgłoszenie w systemie</button>
+
+    </form>
+
+    <div style="text-align:center; margin: 30px 0;">
+        <a href="{{ url_for('dashboard') }}" style="color: var(--text-muted); text-decoration: none;">← Anuluj i wróć do listy</a>
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/form_validation.js')}}"></script>
+</body>
+</html>
