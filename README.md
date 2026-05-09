@@ -11,20 +11,28 @@ Główne Funkcjonalności
 
 Technologie
 1. Backend: Python 3.10 + Flask
-2. Baza danych: MySQL + SQLAlchemy
+2. Baza danych: MySQL 8.0 + SQLAlchemy
 3. Frontend: HTML5, CSS3, JavaScript
 4. Migracje: Flask-Migrate
-5. Bezpieczeństwo: Haszowanie haseł (Werkzeug), ochrona sesji (Secret Key).
+5. Bezpieczeństwo: Werkzeug (Hashing), TLS/SSL
 
 Architektura Projektu
 Projekt realizuje zasadę Separation of Concerns:
-- models.py - Definicja schematu bazy danych i relacji.
-- app.py - Logika serwerowa i kontroler tras.
-- utils.py - Moduły pomocnicze i logika biznesowa.
-- static/ - Odseparowane zasoby CSS i JS.
+- app.py - główny serwer, kontroler tras i konfiguracja HTTPS.
+- models.py - schemat bazy danych i relacji ORM.
+- utils.py - moduły pomocnicze, obsługa logów i formatowanie danych.
+- templates/ - warstwa prezentacji (Jinja2).
+- static/ - zasoby wizualne (CSS, JS, Uploads).
+
+Konfiguracja sieciowa
+
+System został zaprojetkowany do pracy w odizolowanych segmentach sieciowych:
+- VLAN 10: PC_Konsultant (192.168.10.10).
+- VLAN 20: Server_FLASK (192.168.20.10).
+- VLAN 30: Server_SQL (192.168.30.10).
+- VLAN 99: Admin_IT (192.168.99.10).
+- HTTPS: Komunikacja szyfrowana na porcie 443.
 
 Instalacja
-1. Sklonuj repozytorium.
-2. Zainstaluj biblioteki: pip install -r requirements.txt.
-3. Skonfiguruj bazę danych w app.py.
-4. Uruchom aplikację: python app.py.
+```bash
+   git clone [https://github.com/kking1232/ServiceDesk.git](https://github.com/kking1232/ServiceDesk.git)
